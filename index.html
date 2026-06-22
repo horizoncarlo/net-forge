@@ -1,35 +1,97 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1"
+    />
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/ace-builds@1/src-min-noconflict/ace.min.js"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/ace-builds@1/src-min-noconflict/ext-language_tools.min.js"
+    ></script>
+
+    <style>
+      html, body {
+        padding: 0;
+        margin: 0;
+      }
+
+      .code-editor, iframe {
+        display: inline-block;
+        width: calc(50% - 8px);
+        height: calc(100vh - 10px);
+        border: 3px inset gray;
+      }
+    </style>
+
     <script>
       const STORAGE_ITEM = "ourPageContent";
-      
+      const DEFAULT_PAGE_CONTENT = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+  </head>
+  <body>
+    <h1>Page Content</h1>
+  </body>
+</html>`;
+      let codeInput;
+      let codeOutput;
+
       function init() {
-        const saved = localStorage.getItem(STORAGE_ITEM);
-        console.log("SAVED", saved);
-        if (saved?.trim()?.length) {
-          document.getElementById("input").value = saved;
-          updatePreview();
+        codeInput = ace.edit("input");
+        codeOutput = document.getElementById("output");
+
+        codeInput.setTheme("ace/theme/textmate");
+        codeInput.session.setMode("ace/mode/html");
+        codeInput.setOptions({
+          fontSize: "14px",
+          showLineNumbers: true,
+          showGutter: true,
+          highlightActiveLine: true,
+          showPrintMargin: false,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          tabSize: 2,
+          useSoftTabs: true,
+        });
+
+        codeInput.textInput.getElement().addEventListener(
+          "keyup",
+          function (e) {
+            updateOutput();
+          },
+        );
+
+        let saved = localStorage.getItem(STORAGE_ITEM);
+        if (!saved?.trim().length) {
+          saved = DEFAULT_PAGE_CONTENT;
         }
+        codeInput.setValue(saved, 1);
+
+        setTimeout(() => {
+          updateOutput();
+        });
       }
-      
-      window.addEventListener('load', () => {
+
+      window.addEventListener("load", () => {
         init();
       });
-      
-      function updatePreview() {
-        const input = document.getElementById("input");
-        const output = document.getElementById("output");
-        if (input && output) {
-          output.srcdoc = input.value;
-          
-          localStorage.setItem(STORAGE_ITEM, input.value);
-        }
+
+      function updateOutput() {
+        const value = codeInput.getValue() ?? "";
+
+        codeOutput.srcdoc = value;
+        localStorage.setItem(STORAGE_ITEM, value);
       }
     </script>
   </head>
   <body>
-    <textarea id="input" rows="10" cols="50" onkeyup="updatePreview()"></textarea>
-    
+    <div id="input" class="code-editor"></div>
+
     <iframe id="output" sandbox="allow-scripts allow-forms"></iframe>
   </body>
 </html>
