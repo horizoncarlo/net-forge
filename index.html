@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <script>
+      const STORAGE_ITEM = "ourPageContent";
+      
+      function init() {
+        const saved = localStorage.getItem(STORAGE_ITEM);
+        console.log("SAVED", saved);
+        if (saved?.trim()?.length) {
+          document.getElementById("input").value = saved;
+          updatePreview();
+        }
+      }
+      
+      window.addEventListener('load', () => {
+        init();
+      });
+      
+      function updatePreview() {
+        const input = document.getElementById("input");
+        const output = document.getElementById("output");
+        if (input && output) {
+          output.srcdoc = input.value;
+          
+          localStorage.setItem(STORAGE_ITEM, input.value);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <textarea id="input" rows="10" cols="50" onkeyup="updatePreview()"></textarea>
+    
+    <iframe id="output" sandbox="allow-scripts allow-forms"></iframe>
+  </body>
+</html>

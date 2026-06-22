@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ace Editor Demo</title>
+
+<style>
+body {
+    margin: 20px;
+    font-family: sans-serif;
+}
+
+#editor {
+    width: 100%;
+    height: 500px;
+    border: 1px solid #ccc;
+}
+</style>
+</head>
+<body>
+
+<h1>Ace Editor</h1>
+
+<div id="editor"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.3/ext-language_tools.min.js"></script>
+
+<script>
+const editor = ace.edit("editor");
+
+// Theme
+editor.setTheme("ace/theme/textmate");
+
+// Mode: HTML (includes embedded JS + CSS highlighting)
+editor.session.setMode("ace/mode/html");
+
+// Basic config
+editor.setOptions({
+    fontSize: "14px",
+    showLineNumbers: true,
+    showGutter: true,
+    highlightActiveLine: true,
+    showPrintMargin: false,
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: true,
+    enableSnippets: true,
+    tabSize: 4,
+    useSoftTabs: true
+});
+
+// Starter content
+editor.setValue(``, -1);
+</script>
+
+</body>
+</html>
