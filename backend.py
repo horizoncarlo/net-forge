@@ -4,9 +4,8 @@ import re
 import mimetypes
 from pathlib import Path
 
-from flask import Flask, request, jsonify, Response, abort
+from flask import Flask, request, jsonify, Response, abort, send_file
 from flask_cors import CORS
-
 
 app = Flask(__name__)
 
@@ -14,6 +13,7 @@ SITES_BASE_DIR = Path(os.environ.get("SITES_BASE_DIR", "/var/www/html/")).resolv
 PUBLIC_HOST = os.environ.get("PUBLIC_HOST", "http://github.com").rstrip("/") + "/"
 ENABLE_DEV_CORS = os.environ.get("ENABLE_DEV_CORS", "false").lower() == "true"
 ENABLE_FLASK_DEBUG = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+APP_DIR = Path(__file__).parent.resolve()
 
 MAX_FILENAME_LENGTH = 80
 MAX_FILE_BYTES = 500_000
@@ -42,6 +42,11 @@ if ENABLE_DEV_CORS:
             "http://127.0.0.1:8080",
         ],
     )
+
+
+@app.get("/")
+def main():
+    return send_file(APP_DIR / "index.html")
 
 
 def get_basic_auth_username() -> str:
@@ -228,9 +233,7 @@ def create_page(page_name):
 
     body = request.get_json(silent=True) or {}
 
-    content = (
-        body.get("content")
-        or f"""<!DOCTYPE html>
+    content = body.get("content") or f"""<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
@@ -239,7 +242,6 @@ def create_page(page_name):
     <h1>Your New {page_name} Page</h1>
   </body>
 </html>"""
-    )
 
     validate_file_content_size(content)
     path.write_text(content, encoding="utf-8")
