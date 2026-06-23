@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Netforge - Online Editor</title>
-  
+
     <meta
       name="viewport"
       content="width=device-width, height=device-height, initial-scale=1"
@@ -14,40 +14,270 @@
     <script
       src="https://cdn.jsdelivr.net/npm/ace-builds@1/src-min-noconflict/ext-language_tools.min.js"
     ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/ace-builds@1/src-min-noconflict/ext-themelist.js"
+    ></script>
+    
+    <script>
+      /*! split-grid - v1.0.11 */
+      !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):(t="undefined"!=typeof globalThis?globalThis:t||self).Split=e()}(this,(function(){"use strict";var t=function(t,e){return Number(t.slice(0,-1*e.length))},e=function(e){return e.endsWith("px")?{value:e,type:"px",numeric:t(e,"px")}:e.endsWith("fr")?{value:e,type:"fr",numeric:t(e,"fr")}:e.endsWith("%")?{value:e,type:"%",numeric:t(e,"%")}:"auto"===e?{value:e,type:"auto"}:null},i=function(t){return t.split(" ").map(e)},r=function(t,e,i){return e.concat(i).map((function(e){return e.style[t]})).filter((function(t){return void 0!==t&&""!==t}))},s=function(t){for(var e=0;e<t.length;e++)if(t[e].numeric>0)return e;return null},n=function(){return!1},o=function(t,e,i){t.style[e]=i},a=function(t,e,i){var r=t[e];return void 0!==r?r:i};function h(t){var e;return(e=[]).concat.apply(e,Array.from(t.ownerDocument.styleSheets).map((function(t){var e=[];try{e=Array.from(t.cssRules||[])}catch(t){}return e}))).filter((function(e){var i=!1;try{i=t.matches(e.selectorText)}catch(t){}return i}))}var c=function(t,e,i){this.direction=t,this.element=e.element,this.track=e.track,"column"===t?(this.gridTemplateProp="grid-template-columns",this.gridGapProp="grid-column-gap",this.cursor=a(i,"columnCursor",a(i,"cursor","col-resize")),this.snapOffset=a(i,"columnSnapOffset",a(i,"snapOffset",30)),this.dragInterval=a(i,"columnDragInterval",a(i,"dragInterval",1)),this.clientAxis="clientX",this.optionStyle=a(i,"gridTemplateColumns")):"row"===t&&(this.gridTemplateProp="grid-template-rows",this.gridGapProp="grid-row-gap",this.cursor=a(i,"rowCursor",a(i,"cursor","row-resize")),this.snapOffset=a(i,"rowSnapOffset",a(i,"snapOffset",30)),this.dragInterval=a(i,"rowDragInterval",a(i,"dragInterval",1)),this.clientAxis="clientY",this.optionStyle=a(i,"gridTemplateRows")),this.onDragStart=a(i,"onDragStart",n),this.onDragEnd=a(i,"onDragEnd",n),this.onDrag=a(i,"onDrag",n),this.writeStyle=a(i,"writeStyle",o),this.startDragging=this.startDragging.bind(this),this.stopDragging=this.stopDragging.bind(this),this.drag=this.drag.bind(this),this.minSizeStart=e.minSizeStart,this.minSizeEnd=e.minSizeEnd,e.element&&(this.element.addEventListener("mousedown",this.startDragging),this.element.addEventListener("touchstart",this.startDragging))};c.prototype.getDimensions=function(){var t=this.grid.getBoundingClientRect(),e=t.width,i=t.height,r=t.top,s=t.bottom,n=t.left,o=t.right;"column"===this.direction?(this.start=r,this.end=s,this.size=i):"row"===this.direction&&(this.start=n,this.end=o,this.size=e)},c.prototype.getSizeAtTrack=function(t,e){return function(t,e,i,r){void 0===i&&(i=0),void 0===r&&(r=!1);var s=r?t+1:t;return e.slice(0,s).reduce((function(t,e){return t+e.numeric}),0)+(i?t*i:0)}(t,this.computedPixels,this.computedGapPixels,e)},c.prototype.getSizeOfTrack=function(t){return this.computedPixels[t].numeric},c.prototype.getRawTracks=function(){var t=r(this.gridTemplateProp,[this.grid],h(this.grid));if(!t.length){if(this.optionStyle)return this.optionStyle;throw Error("Unable to determine grid template tracks from styles.")}return t[0]},c.prototype.getGap=function(){var t=r(this.gridGapProp,[this.grid],h(this.grid));return t.length?t[0]:null},c.prototype.getRawComputedTracks=function(){return window.getComputedStyle(this.grid)[this.gridTemplateProp]},c.prototype.getRawComputedGap=function(){return window.getComputedStyle(this.grid)[this.gridGapProp]},c.prototype.setTracks=function(t){this.tracks=t.split(" "),this.trackValues=i(t)},c.prototype.setComputedTracks=function(t){this.computedTracks=t.split(" "),this.computedPixels=i(t)},c.prototype.setGap=function(t){this.gap=t},c.prototype.setComputedGap=function(t){var e,i;this.computedGap=t,this.computedGapPixels=(e="px",((i=this.computedGap).endsWith(e)?Number(i.slice(0,-1*e.length)):null)||0)},c.prototype.getMousePosition=function(t){return"touches"in t?t.touches[0][this.clientAxis]:t[this.clientAxis]},c.prototype.startDragging=function(t){if(!("button"in t)||0===t.button){t.preventDefault(),this.element?this.grid=this.element.parentNode:this.grid=t.target.parentNode,this.getDimensions(),this.setTracks(this.getRawTracks()),this.setComputedTracks(this.getRawComputedTracks()),this.setGap(this.getGap()),this.setComputedGap(this.getRawComputedGap());var e=this.trackValues.filter((function(t){return"%"===t.type})),i=this.trackValues.filter((function(t){return"fr"===t.type}));if(this.totalFrs=i.length,this.totalFrs){var r=s(i);null!==r&&(this.frToPixels=this.computedPixels[r].numeric/i[r].numeric)}if(e.length){var o=s(e);null!==o&&(this.percentageToPixels=this.computedPixels[o].numeric/e[o].numeric)}var a=this.getSizeAtTrack(this.track,!1)+this.start;if(this.dragStartOffset=this.getMousePosition(t)-a,this.aTrack=this.track-1,!(this.track<this.tracks.length-1))throw Error("Invalid track index: "+this.track+". Track must be between two other tracks and only "+this.tracks.length+" tracks were found.");this.bTrack=this.track+1,this.aTrackStart=this.getSizeAtTrack(this.aTrack,!1)+this.start,this.bTrackEnd=this.getSizeAtTrack(this.bTrack,!0)+this.start,this.dragging=!0,window.addEventListener("mouseup",this.stopDragging),window.addEventListener("touchend",this.stopDragging),window.addEventListener("touchcancel",this.stopDragging),window.addEventListener("mousemove",this.drag),window.addEventListener("touchmove",this.drag),this.grid.addEventListener("selectstart",n),this.grid.addEventListener("dragstart",n),this.grid.style.userSelect="none",this.grid.style.webkitUserSelect="none",this.grid.style.MozUserSelect="none",this.grid.style.pointerEvents="none",this.grid.style.cursor=this.cursor,window.document.body.style.cursor=this.cursor,this.onDragStart(this.direction,this.track)}},c.prototype.stopDragging=function(){this.dragging=!1,this.cleanup(),this.onDragEnd(this.direction,this.track),this.needsDestroy&&(this.element&&(this.element.removeEventListener("mousedown",this.startDragging),this.element.removeEventListener("touchstart",this.startDragging)),this.destroyCb(),this.needsDestroy=!1,this.destroyCb=null)},c.prototype.drag=function(t){var e=this.getMousePosition(t),i=this.getSizeOfTrack(this.track),r=this.aTrackStart+this.minSizeStart+this.dragStartOffset+this.computedGapPixels,s=this.bTrackEnd-this.minSizeEnd-this.computedGapPixels-(i-this.dragStartOffset);e<r+this.snapOffset&&(e=r),e>s-this.snapOffset&&(e=s),e<r?e=r:e>s&&(e=s);var n=e-this.aTrackStart-this.dragStartOffset-this.computedGapPixels,o=this.bTrackEnd-e+this.dragStartOffset-i-this.computedGapPixels;if(this.dragInterval>1){var a=Math.round(n/this.dragInterval)*this.dragInterval;o-=a-n,n=a}if(n<this.minSizeStart&&(n=this.minSizeStart),o<this.minSizeEnd&&(o=this.minSizeEnd),"px"===this.trackValues[this.aTrack].type)this.tracks[this.aTrack]=n+"px";else if("fr"===this.trackValues[this.aTrack].type)if(1===this.totalFrs)this.tracks[this.aTrack]="1fr";else{var h=n/this.frToPixels;this.tracks[this.aTrack]=h+"fr"}else if("%"===this.trackValues[this.aTrack].type){var c=n/this.percentageToPixels;this.tracks[this.aTrack]=c+"%"}if("px"===this.trackValues[this.bTrack].type)this.tracks[this.bTrack]=o+"px";else if("fr"===this.trackValues[this.bTrack].type)if(1===this.totalFrs)this.tracks[this.bTrack]="1fr";else{var u=o/this.frToPixels;this.tracks[this.bTrack]=u+"fr"}else if("%"===this.trackValues[this.bTrack].type){var d=o/this.percentageToPixels;this.tracks[this.bTrack]=d+"%"}var l=this.tracks.join(" ");this.writeStyle(this.grid,this.gridTemplateProp,l),this.onDrag(this.direction,this.track,l)},c.prototype.cleanup=function(){window.removeEventListener("mouseup",this.stopDragging),window.removeEventListener("touchend",this.stopDragging),window.removeEventListener("touchcancel",this.stopDragging),window.removeEventListener("mousemove",this.drag),window.removeEventListener("touchmove",this.drag),this.grid&&(this.grid.removeEventListener("selectstart",n),this.grid.removeEventListener("dragstart",n),this.grid.style.userSelect="",this.grid.style.webkitUserSelect="",this.grid.style.MozUserSelect="",this.grid.style.pointerEvents="",this.grid.style.cursor=""),window.document.body.style.cursor=""},c.prototype.destroy=function(t,e){void 0===t&&(t=!0),t||!1===this.dragging?(this.cleanup(),this.element&&(this.element.removeEventListener("mousedown",this.startDragging),this.element.removeEventListener("touchstart",this.startDragging)),e&&e()):(this.needsDestroy=!0,e&&(this.destroyCb=e))};var u=function(t,e,i){return e in t?t[e]:i},d=function(t,e){return function(i){if(i.track<1)throw Error("Invalid track index: "+i.track+". Track must be between two other tracks.");var r="column"===t?e.columnMinSizes||{}:e.rowMinSizes||{},s="column"===t?"columnMinSize":"rowMinSize";return new c(t,Object.assign({},{minSizeStart:u(r,i.track-1,a(e,s,a(e,"minSize",0))),minSizeEnd:u(r,i.track+1,a(e,s,a(e,"minSize",0)))},i),e)}},l=function(t){var e=this;this.columnGutters={},this.rowGutters={},this.options=Object.assign({},{columnGutters:t.columnGutters||[],rowGutters:t.rowGutters||[],columnMinSizes:t.columnMinSizes||{},rowMinSizes:t.rowMinSizes||{}},t),this.options.columnGutters.forEach((function(t){e.columnGutters[t.track]=d("column",e.options)(t)})),this.options.rowGutters.forEach((function(t){e.rowGutters[t.track]=d("row",e.options)(t)}))};return l.prototype.addColumnGutter=function(t,e){this.columnGutters[e]&&this.columnGutters[e].destroy(),this.columnGutters[e]=d("column",this.options)({element:t,track:e})},l.prototype.addRowGutter=function(t,e){this.rowGutters[e]&&this.rowGutters[e].destroy(),this.rowGutters[e]=d("row",this.options)({element:t,track:e})},l.prototype.removeColumnGutter=function(t,e){var i=this;void 0===e&&(e=!0),this.columnGutters[t]&&this.columnGutters[t].destroy(e,(function(){delete i.columnGutters[t]}))},l.prototype.removeRowGutter=function(t,e){var i=this;void 0===e&&(e=!0),this.rowGutters[t]&&this.rowGutters[t].destroy(e,(function(){delete i.rowGutters[t]}))},l.prototype.handleDragStart=function(t,e,i){"column"===e?(this.columnGutters[i]&&this.columnGutters[i].destroy(),this.columnGutters[i]=d("column",this.options)({track:i}),this.columnGutters[i].startDragging(t)):"row"===e&&(this.rowGutters[i]&&this.rowGutters[i].destroy(),this.rowGutters[i]=d("row",this.options)({track:i}),this.rowGutters[i].startDragging(t))},l.prototype.destroy=function(t){var e=this;void 0===t&&(t=!0),Object.keys(this.columnGutters).forEach((function(i){return e.columnGutters[i].destroy(t,(function(){delete e.columnGutters[i]}))})),Object.keys(this.rowGutters).forEach((function(i){return e.rowGutters[i].destroy(t,(function(){delete e.rowGutters[i]}))}))},function(t){return new l(t)}}));
+      //# sourceMappingURL=split-grid.min.js.map
+    </script>
 
     <style>
-      html, body {
+      :root {
+        --divider-color: goldenrod;
+        --toolbar-min-height: 28px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .toolbar * {
+        font-family: monospace;
+      }
+
+      html,
+      body {
         padding: 0;
         margin: 0;
+        height: 100%;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      .icon {
+        width: 1em;
+        height: 1em;
+        fill: currentColor;
+        flex: none;
+        vertical-align: -0.125em;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 6px;
+      }
+
+      .toolbar,
+      .split-grid.horizontal .split-divider {
+        background: radial-gradient(
+          circle,
+          var(--divider-color) 0%,
+          black 80%
+        );
+      }
+
+      .toolbar a,
+      .toolbar button,
+      .toolbar select {
+        min-height: var(--toolbar-min-height);
+      }
+
+      .toolbar a {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        border: 1px solid buttonborder;
+        background: buttonface;
+        color: buttontext;
+        text-decoration: none;
+      }
+
+      .toolbar a.hidden {
+        display: none;
+      }
+
+      .toolbar-line, .status {
+        color: white;
+      }
+
+      .toolbar-spacer {
+        flex: 1;
+      }
+      
+      #folder, #page, #theme {
+        width: 150px;
+      }
+
+      #publish.confirming {
+        box-shadow: 0 0 10px greenyellow;
+        color: seagreen;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        min-height: var(--toolbar-min-height);
+        text-shadow: 0 0 2px black;
+      }
+
+      .status.status-error {
+        color: red;
+        font-weight: bold;
+        font-size: 1.5em;
+      }
+
+      .split-grid {
+        display: grid;
+        height: 100%;
+        min-height: 0;
+      }
+
+      .split-grid.vertical {
+        grid-template-columns: 1fr 12px 1fr;
+        grid-template-rows: 1fr;
+      }
+
+      .split-grid.horizontal {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 12px 1fr;
+      }
+
+      .split-grid.vertical .split-left {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .split-grid.vertical .split-divider {
+        grid-column: 2;
+        grid-row: 1;
+        cursor: col-resize;
+        background: linear-gradient(
+          0deg,
+          black 20%,
+          var(--divider-color) 100%
+        );
+      }
+
+      .split-grid.vertical .split-right {
+        grid-column: 3;
+        grid-row: 1;
+      }
+
+      .split-grid.horizontal .split-left {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .split-grid.horizontal .split-divider {
+        grid-column: 1;
+        grid-row: 2;
+        cursor: row-resize;
+      }
+
+      .split-grid.horizontal .split-right {
+        grid-column: 1;
+        grid-row: 3;
+      }
+
+      .split-left,
+      .split-right {
+        min-width: 0;
+        min-height: 0;
       }
 
       .code-editor, iframe {
-        display: inline-block;
-        width: calc(50% - 8px);
-        height: calc(100vh - 10px);
-        border: 3px inset gray;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 5px inset gray;
       }
     </style>
 
     <script>
       const STORAGE_ITEM = "ourPageContent";
+      const STORAGE_PAGE_ITEM = "ourPageName";
+      const DEFAULT_PAGE_NAME = "index.html";
+      const OPTIONAL_API_URL = location.protocol === "file:"
+        ? "http://localhost:5000"
+        : "/api";
+
       const DEFAULT_PAGE_CONTENT = `<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
   </head>
   <body>
-    <h1>Page Content</h1>
+    <h1>Welcome to Netforge - make some changes!</h1>
   </body>
 </html>`;
+
       let codeInput;
       let codeOutput;
+      let codeDivider;
+      let splitGrid;
+      let splitInstance;
+      let isHorizontalSplit = false;
+      let isPublishConfirming = false;
+      let statusTimeout = null; // Clear the status text after a while
+      let frameTimeout = null; // Debounce iframe output updates
 
-      function init() {
+      const appState = {
+        online: false,
+        root: "",
+        host: "",
+        files: [],
+        page: DEFAULT_PAGE_NAME,
+      };
+
+      const util = {
+        setCSSProperty(propertyNameWithDashes, value) {
+          document.documentElement.style.setProperty(
+            propertyNameWithDashes,
+            value,
+          );
+        },
+
+        getRandomColor() {
+          const letters = "0123456789ABCDEF";
+          let color = "#";
+
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+
+          return color;
+        },
+
+        async api(path, options) {
+          const response = await fetch(`${OPTIONAL_API_URL}/api${path}`, {
+            ...options,
+          });
+
+          if (!response.ok) {
+            let message = await response.text();
+
+            try {
+              const json = JSON.parse(message);
+              message = json.error || message;
+            } catch (_error) {
+              // Keep raw text if it was not JSON
+            }
+
+            throw new Error(message);
+          }
+
+          return response;
+        },
+      };
+
+      // Initialize the page properly
+      window.addEventListener("load", () => {
         codeInput = ace.edit("input");
         codeOutput = document.getElementById("output");
+        codeDivider = document.getElementById("divider");
+        splitGrid = document.getElementById("split-grid");
 
-        codeInput.setTheme("ace/theme/textmate");
+        loadEditorThemes();
         codeInput.session.setMode("ace/mode/html");
         codeInput.setOptions({
           fontSize: "14px",
@@ -62,39 +292,550 @@
           useSoftTabs: true,
         });
 
-        codeInput.textInput.getElement().addEventListener(
-          "keyup",
-          function (e) {
-            updateOutput();
-          },
+        codeInput.textInput.getElement().addEventListener("keyup", () => {
+          updateOutput();
+        });
+
+        requestAnimationFrame(() => {
+          createDivider();
+          loadLocalContent();
+          loadBackend(true);
+        });
+      });
+
+      // Global error handlers to show in the header
+      window.addEventListener("error", (event) => {
+        console.error(event.error);
+
+        setStatus(
+          event.error?.message ||
+            event.message ||
+            "Unexpected error",
+          true,
+          false,
         );
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        console.error(event.reason);
+
+        setStatus(
+          event.reason?.message ||
+            String(event.reason) ||
+            "Unexpected async error",
+          true,
+          false,
+        );
+      });
+
+      // Clear confirm publish status when clicking elsewhere
+      window.addEventListener("click", (event) => {
+        if (!isPublishConfirming) {
+          return;
+        }
+
+        if (event.target.closest("#publish")) {
+          return;
+        }
+
+        resetPublishButton();
+      });
+      
+      // Hotkey support
+      window.addEventListener("keydown", async (event) => {
+        // For now ONLY care about Ctrl+S, because it's such a reflex that it should do something
+        if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "s") {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (!appState.online) {
+          setStatus("Cannot publish while offline", true);
+          return;
+        }
+
+        await publishPage(true);
+      });
+
+      async function loadBackend(updateStatus = false) {
+        try {
+          const response = await util.api("/me");
+          const me = await response.json();
+
+          appState.online = true;
+          appState.root = me.root || "";
+          appState.host = me.host || "";
+          appState.files = Array.isArray(me.files) ? me.files : [];
+
+          updateToolbar();
+
+          if (appState.files.length) {
+            const savedPage = localStorage.getItem(STORAGE_PAGE_ITEM);
+
+            appState.page = appState.files.includes(savedPage)
+              ? savedPage
+              : appState.files[0];
+
+            document.getElementById("page").value = appState.page;
+            await loadPage();
+          } else {
+            appState.page = DEFAULT_PAGE_NAME;
+            codeInput.setValue(DEFAULT_PAGE_CONTENT, 1);
+            updateOutput();
+            updateToolbar();
+          }
+
+          if (updateStatus) {
+            setStatus(`Connected: ${appState.root || "root"}`);
+          }
+        } catch (_error) {
+          appState.online = false;
+          updateToolbar();
+
+          if (updateStatus) {
+            setStatus("Offline Mode", false, false);
+          }
+        }
+      }
+
+      function loadLocalContent() {
+        appState.page = localStorage.getItem(STORAGE_PAGE_ITEM) ||
+          DEFAULT_PAGE_NAME;
 
         let saved = localStorage.getItem(STORAGE_ITEM);
+
         if (!saved?.trim().length) {
           saved = DEFAULT_PAGE_CONTENT;
         }
-        codeInput.setValue(saved, 1);
 
-        setTimeout(() => {
-          updateOutput();
-        });
+        codeInput.setValue(saved, 1);
+        updateOutput();
+        updateToolbar();
       }
 
-      window.addEventListener("load", () => {
-        init();
-      });
+      function updateToolbar() {
+        const folderIn = document.getElementById("folder");
+        const pageIn = document.getElementById("page");
+        const pageLine = document.getElementById("page-line");
+        const viewBtn = document.getElementById("view");
+        const createBtn = document.getElementById("create");
+        const deleteBtn = document.getElementById("delete");
+        const renameBtn = document.getElementById("rename");
+        const publishBtn = document.getElementById("publish");
+
+        folderIn.innerHTML = "";
+        pageIn.innerHTML = "";
+
+        folderIn.add(
+          new Option(
+            appState.online ? appState.root || "root" : "offline",
+            appState.root,
+          ),
+        );
+
+        const files = appState.files.length
+          ? appState.files
+          : [appState.page || DEFAULT_PAGE_NAME];
+
+        for (const file of files) {
+          pageIn.add(new Option(file, file));
+        }
+
+        pageIn.value = appState.page;
+
+        folderIn.hidden = !appState.online;
+        pageIn.hidden = !appState.online;
+        pageLine.hidden = !appState.online;
+        createBtn.hidden = !appState.online;
+        deleteBtn.hidden = !appState.online;
+        renameBtn.hidden = !appState.online;
+        publishBtn.hidden = !appState.online;
+
+        if (appState.online) {
+          viewBtn.href = getViewUrl();
+          viewBtn.classList.remove("hidden");
+        } else {
+          viewBtn.removeAttribute("href");
+          viewBtn.classList.add("hidden");
+        }
+      }
+
+      function setStatus(message, isError = false, doClear = true) {
+        const status = document.getElementById("status");
+
+        status.textContent = message;
+        status.classList.toggle("status-error", isError);
+
+        // Automatically clear the status after a few seconds
+        if (statusTimeout) {
+          clearTimeout(statusTimeout);
+        }
+
+        if (doClear) {
+          statusTimeout = setTimeout(() => {
+            status.textContent = "";
+          }, 3000);
+        }
+      }
+
+      function getViewUrl() {
+        const host = appState.host || "/sites/";
+        const page = encodeURIComponent(appState.page);
+
+        if (!appState.root) {
+          return `${host}${page}`;
+        }
+
+        return `${host}${encodeURIComponent(appState.root)}/${page}`;
+      }
+
+      async function loadPage(updateStatus = false) {
+        if (!appState.online) {
+          return;
+        }
+
+        appState.page = document.getElementById("page").value;
+        localStorage.setItem(STORAGE_PAGE_ITEM, appState.page);
+
+        const response = await util.api(
+          `/get/${encodeURIComponent(appState.page)}`,
+        );
+        const content = await response.text();
+
+        codeInput.setValue(content, 1);
+        updateOutput();
+        updateToolbar();
+
+        if (updateStatus) {
+          setStatus(`Loaded ${appState.page}`);
+        }
+      }
+
+      async function createPage() {
+        if (!appState.online) {
+          return;
+        }
+
+        const newName = prompt("New filename", "new.html");
+
+        if (!newName) {
+          return;
+        }
+
+        await util.api(`/create/${encodeURIComponent(newName)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        appState.page = newName;
+        localStorage.setItem(STORAGE_PAGE_ITEM, appState.page);
+        setStatus(`Created ${appState.page}`);
+        await loadBackend();
+      }
+
+      async function deletePage() {
+        if (!appState.online) {
+          return;
+        }
+
+        if (!confirm(`Delete ${appState.page}?`)) {
+          return;
+        }
+
+        await util.api(`/delete/${encodeURIComponent(appState.page)}`, {
+          method: "DELETE",
+        });
+
+        setStatus(`Deleted ${appState.page}`);
+        await loadBackend();
+      }
+
+      async function renamePage() {
+        if (!appState.online) {
+          return;
+        }
+
+        const newName = prompt("New filename", appState.page);
+
+        if (!newName) {
+          return;
+        }
+
+        await util.api(`/rename/${encodeURIComponent(appState.page)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newName,
+          }),
+        });
+
+        appState.page = newName;
+        localStorage.setItem(STORAGE_PAGE_ITEM, appState.page);
+        setStatus(`Renamed to ${appState.page}`);
+        await loadBackend();
+      }
+
+      async function publishPage(noConfirm = false) {
+        if (!appState.online) {
+          return;
+        }
+
+        const publishBtn = document.getElementById("publish");
+
+        if (!noConfirm && !isPublishConfirming) {
+          isPublishConfirming = true;
+          publishBtn.classList.add("confirming");
+          publishBtn.innerText = "CONFIRM";
+          setStatus(
+            `Confirm sending ${appState.page} to the server?`,
+            false,
+            false,
+          );
+
+          return;
+        }
+
+        await util.api(`/publish/${encodeURIComponent(appState.page)}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+          },
+          body: codeInput.getValue(),
+        });
+
+        resetPublishButton();
+        setStatus(`YAY! Published ${appState.page}`);
+      }
+
+      function resetPublishButton() {
+        const publishBtn = document.getElementById("publish");
+
+        isPublishConfirming = false;
+        publishBtn.classList.remove("confirming");
+        publishBtn.innerText = "PUBLISH";
+      }
 
       function updateOutput() {
         const value = codeInput.getValue() ?? "";
 
-        codeOutput.srcdoc = value;
         localStorage.setItem(STORAGE_ITEM, value);
+        
+        if (frameTimeout) {
+          clearTimeout(frameTimeout);
+        }
+        
+        frameTimeout = setTimeout(() => {
+          codeOutput.srcdoc = value;
+        }, 200);
+      }
+
+      function createDivider() {
+        if (splitInstance) {
+          splitInstance.destroy();
+        }
+
+        if (isHorizontalSplit) {
+          splitInstance = Split({
+            rowGutters: [
+              {
+                track: 1,
+                element: codeDivider,
+              },
+            ],
+          });
+        } else {
+          splitInstance = Split({
+            columnGutters: [
+              {
+                track: 1,
+                element: codeDivider,
+              },
+            ],
+          });
+        }
+
+        util.setCSSProperty("--divider-color", util.getRandomColor());
+      }
+
+      function toggleSplitDirection() {
+        // Clear any set values in case of dragging the divider
+        splitGrid.style.gridTemplateColumns = "";
+        splitGrid.style.gridTemplateRows = "";
+
+        isHorizontalSplit = !isHorizontalSplit;
+
+        splitGrid.classList.toggle("vertical", !isHorizontalSplit);
+        splitGrid.classList.toggle("horizontal", isHorizontalSplit);
+
+        requestAnimationFrame(() => {
+          createDivider();
+          codeInput.resize();
+        });
+      }
+
+      function loadEditorThemes() {
+        const themeSelect = document.getElementById("theme");
+        const themes = ace.require("ace/ext/themelist").themes;
+
+        const lightThemes = themes
+          .filter((theme) => !theme.isDark)
+          .sort((a, b) => a.caption.localeCompare(b.caption));
+
+        const darkThemes = themes
+          .filter((theme) => theme.isDark)
+          .sort((a, b) => a.caption.localeCompare(b.caption));
+
+        themeSelect.innerHTML = "";
+
+        const lightGroup = document.createElement("optgroup");
+        lightGroup.label = "Light";
+
+        for (const theme of lightThemes) {
+          lightGroup.appendChild(new Option(theme.caption, theme.theme));
+        }
+
+        const darkGroup = document.createElement("optgroup");
+        darkGroup.label = "Dark";
+
+        for (const theme of darkThemes) {
+          darkGroup.appendChild(new Option(theme.caption, theme.theme));
+        }
+
+        themeSelect.appendChild(lightGroup);
+        themeSelect.appendChild(darkGroup);
+
+        themeSelect.value = localStorage.getItem("aceTheme") ||
+          "ace/theme/eclipse";
+
+        setEditorTheme(themeSelect.value);
+      }
+
+      function setEditorTheme(theme) {
+        codeInput.setTheme(theme);
+        localStorage.setItem("aceTheme", theme);
       }
     </script>
   </head>
-  <body>
-    <div id="input" class="code-editor"></div>
 
-    <iframe id="output" sandbox="allow-scripts allow-forms"></iframe>
+  <body>
+    <div class="toolbar">
+      <select id="folder" hidden>
+        <option>offline</option>
+      </select>
+
+      <b id="page-line" class="toolbar-line" hidden>/</b>
+
+      <select id="page" onchange="loadPage(true)" hidden>
+        <option>index.html</option>
+      </select>
+
+      <b class="toolbar-line">&nbsp;|&nbsp;</b>
+
+      <button id="create" onclick="createPage()" hidden>
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M6 2h9l5 5v15H6V2zm8 2v5h4l-4-5z"></path>
+          <path d="M11 11h2v3h3v2h-3v3h-2v-3H8v-2h3v-3z"></path>
+        </svg>
+        Create
+      </button>
+
+      <button id="delete" onclick="deletePage()" hidden>
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M9 3h6l1 2h5v2H3V5h5l1-2z"></path>
+          <path d="M6 9h12l-1 12H7L6 9zm4 2v8h2v-8h-2zm4 0v8h2v-8h-2z"></path>
+        </svg>
+        Delete
+      </button>
+
+      <button id="rename" onclick="renamePage()" hidden>
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M4 17.25V21h3.75L18.81 9.94l-3.75-3.75L4 17.25z"></path>
+          <path
+            d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.13 1.13 3.75 3.75 1.13-1.13z"
+          >
+          </path>
+        </svg>
+        Rename
+      </button>
+
+      <button
+        id="publish"
+        onclick="publishPage()"
+        style="font-weight: bold"
+        hidden
+      >
+        PUBLISH
+      </button>
+      
+      <span id="status" class="status">
+        Loading...
+      </span>
+
+      <span class="toolbar-spacer"></span>
+      
+      <button onclick="toggleSplitDirection()">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M4 3h6v14H4V3z"></path>
+          <path d="M14 5h3V3l4 4-4 4V9h-3V5z"></path>
+          <path d="M10 14h11v6H10v-6z"></path>
+        </svg>
+        Change Divider
+      </button>
+
+      <select id="theme" onchange="setEditorTheme(this.value)">
+        <option value="ace/theme/eclipse">Eclipse</option>
+      </select>
+      
+      <b class="toolbar-line">&nbsp;|&nbsp;</b>
+
+      <a id="view" class="hidden" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"></path>
+          <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+        </svg>
+        View
+      </a>
+
+      <a href="https://www.w3schools.com/html/" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path
+            d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.93 9h-3.08a15.7 15.7 0 0 0-1.19-5.03A8.03 8.03 0 0 1 18.93 11zM12 4.04c.74 1.08 1.55 3.32 1.8 6.96h-3.6c.25-3.64 1.06-5.88 1.8-6.96zM4.26 13h3.89c.11 1.95.43 3.7.9 5.03A8.03 8.03 0 0 1 4.26 13zm3.89-2H4.26a8.03 8.03 0 0 1 4.79-5.03A15.7 15.7 0 0 0 8.15 11zM12 19.96c-.74-1.08-1.55-3.32-1.8-6.96h3.6c-.25 3.64-1.06 5.88-1.8 6.96zm2.95-1.93c.47-1.33.79-3.08.9-5.03h3.08a8.03 8.03 0 0 1-3.98 5.03z"
+          >
+          </path>
+        </svg>
+        W3C
+      </a>
+
+      <a
+        href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference"
+        target="_blank"
+        rel="noopener"
+      >
+        <svg class="icon" viewBox="0 0 24 24">
+          <path
+            d="M5 3h10l4 4v14H5V3zm9 2v4h4l-4-4zM7 11h10v2H7v-2zm0 4h10v2H7v-2z"
+          >
+          </path>
+          <path d="M3 6h2v15h12v2H3V6z"></path>
+        </svg>
+        MDN
+      </a>
+    </div>
+
+    <div id="split-grid" class="split-grid vertical">
+      <div class="split-left">
+        <div id="input" class="code-editor"></div>
+      </div>
+
+      <div id="divider" class="split-divider"></div>
+
+      <div class="split-right">
+        <iframe id="output" sandbox="allow-scripts allow-forms"></iframe>
+      </div>
+    </div>
   </body>
 </html>
