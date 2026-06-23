@@ -194,8 +194,10 @@
     </style>
 
     <script>
-      const STORAGE_ITEM = "ourPageContent";
-      const STORAGE_PAGE_ITEM = "ourPageName";
+      const STORAGE_PAGE_CONTENT = "ourPageContent";
+      const STORAGE_PAGE_SELECTION = "ourPageName";
+      const STORAGE_EDITOR_THEME = "ourEditorTheme";
+      const STORAGE_DIVIDER_HORIZONTAL = "ourDivider";
       const DEFAULT_PAGE_NAME = "index.html";
       const OPTIONAL_API_URL = location.protocol === "file:"
         ? "http://localhost:5000"
@@ -295,11 +297,17 @@
         codeInput.textInput.getElement().addEventListener("keyup", () => {
           updateOutput();
         });
-
+        
         requestAnimationFrame(() => {
           createDivider();
           loadLocalContent();
           loadBackend(true);
+          
+          // Load any previous horizontal split divider state
+          const needDividerToggle = ("true" === (localStorage.getItem(STORAGE_DIVIDER_HORIZONTAL) || "false"));
+          if (needDividerToggle) {
+            toggleSplitDirection();
+          }
         });
       });
 
@@ -370,7 +378,7 @@
           updateToolbar();
 
           if (appState.files.length) {
-            const savedPage = localStorage.getItem(STORAGE_PAGE_ITEM);
+            const savedPage = localStorage.getItem(STORAGE_PAGE_SELECTION);
 
             appState.page = appState.files.includes(savedPage)
               ? savedPage
@@ -399,10 +407,10 @@
       }
 
       function loadLocalContent() {
-        appState.page = localStorage.getItem(STORAGE_PAGE_ITEM) ||
+        appState.page = localStorage.getItem(STORAGE_PAGE_SELECTION) ||
           DEFAULT_PAGE_NAME;
 
-        let saved = localStorage.getItem(STORAGE_ITEM);
+        let saved = localStorage.getItem(STORAGE_PAGE_CONTENT);
 
         if (!saved?.trim().length) {
           saved = DEFAULT_PAGE_CONTENT;
@@ -495,7 +503,7 @@
         }
 
         appState.page = document.getElementById("page").value;
-        localStorage.setItem(STORAGE_PAGE_ITEM, appState.page);
+        localStorage.setItem(STORAGE_PAGE_SELECTION, appState.page);
 
         const response = await util.api(
           `/get/${encodeURIComponent(appState.page)}`,
@@ -530,7 +538,7 @@
         });
 
         appState.page = newName;
-        localStorage.setItem(STORAGE_PAGE_ITEM, appState.page);
+        localStorage.setItem(STORAGE_PAGE_SELECTION, appState.page);
         setStatus(`Created ${appState.page}`);
         await loadBackend();
       }
@@ -574,7 +582,7 @@
         });
 
         appState.page = newName;
-        localStorage.setItem(STORAGE_PAGE_ITEM, appState.page);
+        localStorage.setItem(STORAGE_PAGE_SELECTION, appState.page);
         setStatus(`Renamed to ${appState.page}`);
         await loadBackend();
       }
@@ -622,7 +630,7 @@
       function updateOutput() {
         const value = codeInput.getValue() ?? "";
 
-        localStorage.setItem(STORAGE_ITEM, value);
+        localStorage.setItem(STORAGE_PAGE_CONTENT, value);
         
         if (frameTimeout) {
           clearTimeout(frameTimeout);
@@ -667,6 +675,8 @@
         splitGrid.style.gridTemplateRows = "";
 
         isHorizontalSplit = !isHorizontalSplit;
+        
+        localStorage.setItem(STORAGE_DIVIDER_HORIZONTAL, isHorizontalSplit);
 
         splitGrid.classList.toggle("vertical", !isHorizontalSplit);
         splitGrid.classList.toggle("horizontal", isHorizontalSplit);
@@ -708,7 +718,7 @@
         themeSelect.appendChild(lightGroup);
         themeSelect.appendChild(darkGroup);
 
-        themeSelect.value = localStorage.getItem("aceTheme") ||
+        themeSelect.value = localStorage.getItem(STORAGE_EDITOR_THEME) ||
           "ace/theme/eclipse";
 
         setEditorTheme(themeSelect.value);
@@ -716,7 +726,7 @@
 
       function setEditorTheme(theme) {
         codeInput.setTheme(theme);
-        localStorage.setItem("aceTheme", theme);
+        localStorage.setItem(STORAGE_EDITOR_THEME, theme);
       }
     </script>
   </head>
