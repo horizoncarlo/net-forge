@@ -5,5 +5,6 @@ export PUBLIC_HOST=
 
 source .venv/bin/activate
 #screen -d -m -S netforge sh -c "flask --app backend.py run -p 5000 --host=0.0.0.0 $@"
-screen -d -m -S netforge sh -c "bash go-gunicorn.sh $@"
-screen -r
+#screen -d -m -S netforge sh -c "bash go-gunicorn.sh $@"
+#screen -r
+pm2 start go-gunicorn.sh --name "netforge"
